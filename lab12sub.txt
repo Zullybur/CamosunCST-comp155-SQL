@@ -1,0 +1,203 @@
+SQL> SET PAGESIZE 50
+SQL> SET LINESIZE 120
+SQL> 
+SQL> /*********************************
+SQL>  Assignment - Lab 12 Solution
+SQL>  By Matthew Casiro
+SQL>  Lab Section: 1A
+SQL> **********************************/
+SQL> 
+SQL> /*** Step 1 Create NEW_STUDENTS ***/
+SQL> 
+SQL> CREATE TABLE new_students (
+  2  	 temp_id number(5),
+  3  	 prog_id char(4),
+  4  	 fname varchar2(25),
+  5  	 lname varchar2(25),
+  6  	 reg_date date
+  7  	 );
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> /*** Step 2 Add columns ***/
+SQL> 
+SQL> ALTER TABLE new_students
+  2  ADD created_by varchar2(30) NOT NULL;
+
+Table altered.
+
+SQL> ALTER TABLE new_students
+  2  ADD created_date date DEFAULT SYSDATE;
+
+Table altered.
+
+SQL> 
+SQL> /*** Step 3 Confirm additions ***/
+SQL> 
+SQL> DESC NEW_STUDENTS
+ Name                                                              Null?    Type
+ ----------------------------------------------------------------- -------- --------------------------------------------
+ TEMP_ID                                                                    NUMBER(5)
+ PROG_ID                                                                    CHAR(4)
+ FNAME                                                                      VARCHAR2(25)
+ LNAME                                                                      VARCHAR2(25)
+ REG_DATE                                                                   DATE
+ CREATED_BY                                                        NOT NULL VARCHAR2(30)
+ CREATED_DATE                                                               DATE
+
+SQL> 
+SQL> /*** Step 4 Confirm constraints for NEW_STUDENTS ***/
+SQL> 
+SQL> SELECT constraint_name, constraint_type, search_condition
+  2  FROM user_constraints
+  3  WHERE table_name = 'NEW_STUDENTS';
+
+CONSTRAINT_NAME                C SEARCH_CONDITION                                                                       
+------------------------------ - --------------------------------------------------------------------------------       
+SYS_C00298388                  C "CREATED_BY" IS NOT NULL                                                               
+
+SQL> 
+SQL> /*** Step 5 Create PROGRAMMES ***/
+SQL> 
+SQL> CREATE TABLE programmes (
+  2  	 prog_id char(4),
+  3  	 prog_desc varchar2(30)
+  4  	 );
+
+Table created.
+
+SQL> 
+SQL> /*** Step 6 Run insert script ***/
+SQL> 
+SQL> @/Users/MattCasiro/OneDrive/Camosun/comp155/labs/lab12inserts.sql
+SQL> INSERT INTO new_students
+  2  (temp_id,prog_id,fname,lname,reg_date, created_by)
+  3  VALUES
+  4  (9516, 'comp','Ted','Codd',sysdate,user);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO programmes
+  2  (prog_id, prog_desc)
+  3  VALUES
+  4  ('comp','Computer Technology');
+
+1 row created.
+
+SQL> 
+SQL> /*** Step 7 SELECT from created tables ***/
+SQL> 
+SQL> SELECT *
+  2  FROM new_students;
+
+   TEMP_ID PROG FNAME                     LNAME                     REG_DATE  CREATED_BY                     CREATED_D  
+---------- ---- ------------------------- ------------------------- --------- ------------------------------ ---------  
+      9516 comp Ted                       Codd                      22-FEB-16 CASIRO                         22-FEB-16  
+
+SQL> 
+SQL> SELECT *
+  2  FROM programmes;
+
+PROG PROG_DESC                                                                                                          
+---- ------------------------------                                                                                     
+comp Computer Technology                                                                                                
+
+SQL> 
+SQL> /*** Step 8 Alter PROGRAMMES ***/
+SQL> 
+SQL> ALTER TABLE programmes
+  2  ADD CONSTRAINT prog_id_pk
+  3  PRIMARY KEY (prog_id);
+
+Table altered.
+
+SQL> 
+SQL> /*** Step 9 Alter NEW_STUDENTS ***/
+SQL> 
+SQL> ALTER TABLE new_students
+  2  ADD CONSTRAINT tempid_progid_pk
+  3  PRIMARY KEY (temp_id, prog_id);
+
+Table altered.
+
+SQL> 
+SQL> /*** Step 10 Add foreign key constraint ***/
+SQL> 
+SQL> ALTER TABLE new_students
+  2  ADD CONSTRAINT prog_id_fk
+  3  FOREIGN KEY (prog_id) REFERENCES programmes (prog_id);
+
+Table altered.
+
+SQL> 
+SQL> /*** Step 11 Confirm constraints for new tables ***/
+SQL> 
+SQL> SELECT table_name, constraint_name, constraint_type, search_condition
+  2  FROM user_constraints
+  3  WHERE table_name = 'NEW_STUDENTS'
+  4  OR table_name = 'PROGRAMMES'
+  5  ORDER BY table_name;
+
+TABLE_NAME                     CONSTRAINT_NAME                C                                                         
+------------------------------ ------------------------------ -                                                         
+SEARCH_CONDITION                                                                                                        
+--------------------------------------------------------------------------------                                        
+NEW_STUDENTS                   SYS_C00298388                  C                                                         
+"CREATED_BY" IS NOT NULL                                                                                                
+                                                                                                                        
+NEW_STUDENTS                   TEMPID_PROGID_PK               P                                                         
+                                                                                                                        
+                                                                                                                        
+NEW_STUDENTS                   PROG_ID_FK                     R                                                         
+                                                                                                                        
+                                                                                                                        
+PROGRAMMES                     PROG_ID_PK                     P                                                         
+                                                                                                                        
+                                                                                                                        
+
+SQL> 
+SQL> /*** Step 12 Insert into NEW_STUDENTS ***/
+SQL> 
+SQL> INSERT INTO new_students
+  2  VALUES
+  3  	 (9517, 'econ', 'Bill', 'Gates', SYSDATE, 'Matthew Casiro', NULL);
+INSERT INTO new_students
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (CASIRO.PROG_ID_FK) violated - parent key not found 
+
+
+SQL> 
+SQL> /*** Step 13 Explain error ***/
+SQL> 
+SQL> REM You should get an error when you insert the record in Step 12. Why?
+SQL> 
+SQL> /*** Step 14 Add date constraint ***/
+SQL> 
+SQL> REM SQL command here
+SQL> 
+SQL> /*** Step 15 Test date constraint ***/
+SQL> 
+SQL> REM SQL command here
+SQL> 
+SQL> /*** Step 16 List constraints for new tables ***/
+SQL> 
+SQL> REM SQL command here
+SQL> 
+SQL> /*** Step 17 Clean up schema ***/
+SQL> 
+SQL> DROP TABLE new_students PURGE;
+
+Table dropped.
+
+SQL> DROP TABLE programmes PURGE;
+
+Table dropped.
+
+SQL> 
+SQL> /*** Step 18 End ***/
+SQL> 
+SQL> SPOOL OFF
