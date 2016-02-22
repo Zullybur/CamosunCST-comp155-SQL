@@ -1,0 +1,149 @@
+SQL> SET PAGESIZE 300
+SQL> SET LINESIZE 300
+SQL> 
+SQL> /*********************************
+SQL> Assignment - Lab 3 Solution
+SQL> By: Matthew Casiro
+SQL> Lab Section: 01A
+SQL> Due: Lab section 1A: due Tuesday Jan 27 @ 1:00
+SQL> Time spent on this lab: 2 hours
+SQL> **********************************/
+SQL> 
+SQL> /*** 1 ***/
+SQL> /* Write a query to display the last name, job, department number, and
+SQL> department name for all employees who work in Southlake. Be sure to
+SQL> handle case (i.e. upper and lower case) when checking that the city
+SQL> is Southlake - use a function to force a proper case comparison. Give
+SQL> the query in SQL:1999 and Oracle SQL. */
+SQL> 
+SQL> -- SQL:1999
+SQL> 
+SQL> SELECT last_name, job_title, department_id, department_name
+  2  FROM employees
+  3  INNER JOIN departments USING (department_id)
+  4  INNER JOIN jobs USING (job_id)
+  5  INNER JOIN locations USING (location_id)
+  6  WHERE UPPER(city)='SOUTHLAKE';
+
+LAST_NAME                 JOB_TITLE                           DEPARTMENT_ID DEPARTMENT_NAME                                                                                                                                                                                                                 
+------------------------- ----------------------------------- ------------- ------------------------------                                                                                                                                                                                                  
+Hunold                    Programmer                                     60 IT                                                                                                                                                                                                                              
+Ernst                     Programmer                                     60 IT                                                                                                                                                                                                                              
+Austin                    Programmer                                     60 IT                                                                                                                                                                                                                              
+Pataballa                 Programmer                                     60 IT                                                                                                                                                                                                                              
+Lorentz                   Programmer                                     60 IT                                                                                                                                                                                                                              
+
+SQL> 
+SQL> 
+SQL> -- Oracle SQL
+SQL> 
+SQL> SELECT last_name, job_title, e.department_id, department_name
+  2  FROM employees e, departments d, jobs j, locations l
+  3  WHERE e.department_id = d.department_id
+  4  AND j.job_id = e.job_id
+  5  AND l.location_id = d.location_id
+  6  AND UPPER(city)='SOUTHLAKE';
+
+LAST_NAME                 JOB_TITLE                           DEPARTMENT_ID DEPARTMENT_NAME                                                                                                                                                                                                                 
+------------------------- ----------------------------------- ------------- ------------------------------                                                                                                                                                                                                  
+Hunold                    Programmer                                     60 IT                                                                                                                                                                                                                              
+Ernst                     Programmer                                     60 IT                                                                                                                                                                                                                              
+Austin                    Programmer                                     60 IT                                                                                                                                                                                                                              
+Pataballa                 Programmer                                     60 IT                                                                                                                                                                                                                              
+Lorentz                   Programmer                                     60 IT                                                                                                                                                                                                                              
+
+SQL> 
+SQL> /*** 2 ***/
+SQL> /* Write a query that will list all of the employees (last names),
+SQL> whose last name starts with 'G' (be sure to handle case - use a
+SQL> function), and the departments (give the name) to which they belong.
+SQL> Include all employees who have not yet been assigned to any department.
+SQL> Give the query in SQL:1999 and Oracle SQL. (Note: do not use IS NULL
+SQL> or IS NOT NULL in your query.) */
+SQL> 
+SQL> -- SQL:1999
+SQL> 
+SQL> SELECT last_name, department_name
+  2  FROM employees
+  3  LEFT OUTER JOIN departments USING (department_id)
+  4  WHERE UPPER(last_name) LIKE 'G%';
+
+LAST_NAME                 DEPARTMENT_NAME                                                                                                                                                                                                                                                                   
+------------------------- ------------------------------                                                                                                                                                                                                                                                    
+Grant                     Shipping                                                                                                                                                                                                                                                                          
+Gates                     Shipping                                                                                                                                                                                                                                                                          
+Geoni                     Shipping                                                                                                                                                                                                                                                                          
+Gee                       Shipping                                                                                                                                                                                                                                                                          
+Greene                    Sales                                                                                                                                                                                                                                                                             
+Greenberg                 Finance                                                                                                                                                                                                                                                                           
+Gietz                     Accounting                                                                                                                                                                                                                                                                        
+Grant                                                                                                                                                                                                                                                                                                       
+
+8 rows selected.
+
+SQL> 
+SQL> -- Oracle SQL
+SQL> 
+SQL> SELECT last_name, department_name
+  2  FROM employees e, departments d
+  3  WHERE e.department_id = d.department_id(+)
+  4  AND UPPER(last_name) LIKE 'G%';
+
+LAST_NAME                 DEPARTMENT_NAME                                                                                                                                                                                                                                                                   
+------------------------- ------------------------------                                                                                                                                                                                                                                                    
+Grant                     Shipping                                                                                                                                                                                                                                                                          
+Gates                     Shipping                                                                                                                                                                                                                                                                          
+Geoni                     Shipping                                                                                                                                                                                                                                                                          
+Gee                       Shipping                                                                                                                                                                                                                                                                          
+Greene                    Sales                                                                                                                                                                                                                                                                             
+Greenberg                 Finance                                                                                                                                                                                                                                                                           
+Gietz                     Accounting                                                                                                                                                                                                                                                                        
+Grant                                                                                                                                                                                                                                                                                                       
+
+8 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*** 3 ***/
+SQL> /* Display the employee last name and employee number along with their
+SQL> manager's last name and manager number (in other words the manager's
+SQL> employee id) for all employees whose last name begins with 'T' (be
+SQL> sure to handle case - use a function). Label the columns Employee,
+SQL> Emp#, Manager, and Mgr#, respectively (note the use of upper and lower
+SQL> case). Give the query in SQL:1999 and Oracle SQL. */
+SQL> 
+SQL> -- SQL:1999
+SQL> 
+SQL> SELECT e.last_name AS "Employee", e.employee_id AS "Emp#",
+  2  	m.last_name AS "Manager", e.manager_id AS "Mgr#"
+  3  FROM employees e LEFT OUTER JOIN employees m
+  4  ON e.manager_id = m.employee_id
+  5  WHERE UPPER(e.last_name) LIKE 'T%';
+
+Employee                        Emp# Manager                         Mgr#                                                                                                                                                                                                                                   
+------------------------- ---------- ------------------------- ----------                                                                                                                                                                                                                                   
+Tobias                           117 Raphaely                         114                                                                                                                                                                                                                                   
+Tuvault                          155 Russell                          145                                                                                                                                                                                                                                   
+Tucker                           150 Russell                          145                                                                                                                                                                                                                                   
+Taylor                           180 Weiss                            120                                                                                                                                                                                                                                   
+Taylor                           176 Zlotkey                          149                                                                                                                                                                                                                                   
+
+SQL> 
+SQL> -- Oracle SQL
+SQL> 
+SQL> SELECT e.last_name AS "Employee", e.employee_id AS "Emp#",
+  2  	m.last_name AS "Manager", e.manager_id AS "Mgr#"
+  3  FROM employees e, employees m
+  4  WHERE e.manager_id = m.employee_id(+)
+  5  AND UPPER(e.last_name) LIKE 'T%';
+
+Employee                        Emp# Manager                         Mgr#                                                                                                                                                                                                                                   
+------------------------- ---------- ------------------------- ----------                                                                                                                                                                                                                                   
+Tobias                           117 Raphaely                         114                                                                                                                                                                                                                                   
+Tuvault                          155 Russell                          145                                                                                                                                                                                                                                   
+Tucker                           150 Russell                          145                                                                                                                                                                                                                                   
+Taylor                           180 Weiss                            120                                                                                                                                                                                                                                   
+Taylor                           176 Zlotkey                          149                                                                                                                                                                                                                                   
+
+SQL> 
+SQL> SPOOL OFF

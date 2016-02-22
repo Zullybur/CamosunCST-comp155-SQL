@@ -1,0 +1,102 @@
+SQL> SET PAGESIZE 100
+SQL> 
+SQL> /*********************************
+SQL>  Assignment - Lab 2 Solution
+SQL> 
+SQL>  By: Matthew Casiro
+SQL>  Lab section: 1A
+SQL>  Due: Thursday Jan 22 @ 1:00
+SQL> 
+SQL>  Time spent working on this lab: 1.0 hours
+SQL>  **********************************/
+SQL> 
+SQL> /*** 1 ***/
+SQL> /* Write a query to display the last name and salary for
+SQL> 	all employees whose salary falls in the range of $2,500
+SQL> 	to $2,600 inclusive. Label the columns Poor Employee and
+SQL> 	Monthly Salary respectively.*/
+SQL> 
+SQL> /* SQL commands here */
+SQL> SELECT last_name AS "Poor Employee", salary AS "Monthly Salary"
+  2  FROM employees
+  3  WHERE salary BETWEEN 2500 AND 2600;
+
+Poor Employee             Monthly Salary                                        
+------------------------- --------------                                        
+Himuro                              2600                                        
+Colmenares                          2500                                        
+Marlow                              2500                                        
+Patel                               2500                                        
+Matos                               2600                                        
+Vargas                              2500                                        
+Sullivan                            2500                                        
+Perkins                             2500                                        
+OConnell                            2600                                        
+Grant                               2600                                        
+
+10 rows selected.
+
+SQL> 
+SQL> /*** 2 ***/
+SQL> /* Write a query to display the last name and department
+SQL> 	number of all employees in departments 60, 70 and 90
+SQL> 	in alphabetical order by last name descending. */
+SQL> 
+SQL> /* SQL commands here */
+SQL> SELECT last_name, department_id
+  2  FROM employees
+  3  WHERE department_id IN (60,70,90)
+  4  ORDER BY last_name DESC;
+
+LAST_NAME                 DEPARTMENT_ID                                         
+------------------------- -------------                                         
+Pataballa                            60                                         
+Lorentz                              60                                         
+Kochhar                              90                                         
+King                                 90                                         
+Hunold                               60                                         
+Ernst                                60                                         
+De Haan                              90                                         
+Baer                                 70                                         
+Austin                               60                                         
+
+9 rows selected.
+
+SQL> 
+SQL> /*** 3 ***/
+SQL> /* Write a query to display the last names of all employees
+SQL> 	where the third letter of their name is an a. */
+SQL> 
+SQL> /* SQL commands here */
+SQL> SELECT last_name
+  2  FROM employees
+  3  WHERE last_name LIKE '__a%';
+
+LAST_NAME                                                                       
+-------------------------                                                       
+Grant                                                                           
+Grant                                                                           
+Whalen                                                                          
+
+SQL> 
+SQL> /*** 4 ***/
+SQL> /* Write a query to display the first name, last name, salary, and
+SQL> 	commission for all employees who earn commissions and have a
+SQL> 	last name beginning with the letter S. Sort data in
+SQL> 	descending order of salary and commissions. */
+SQL> 
+SQL> /* SQL commands here */
+SQL> SELECT first_name, last_name, salary, commission_pct
+  2  FROM employees
+  3  WHERE commission_pct > 0 AND last_name LIKE 'S%'
+  4  ORDER BY salary, commission_pct DESC;
+
+FIRST_NAME           LAST_NAME                     SALARY COMMISSION_PCT        
+-------------------- ------------------------- ---------- --------------        
+Sarath               Sewall                          7000            .25        
+William              Smith                           7400            .15        
+Lindsey              Smith                           8000             .3        
+Patrick              Sully                           9500            .35        
+
+SQL> 
+SQL> SPOOL OFF

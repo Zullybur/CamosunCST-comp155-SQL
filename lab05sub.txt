@@ -1,0 +1,122 @@
+SQL> 
+SQL> /*********************************
+SQL>  Assignment - Lab 5 Solution
+SQL>  By: Matthew Casiro
+SQL>  Section: 1A
+SQL>  Due: Tuesday, Feb 3 10:30 am
+SQL> 
+SQL>  Time spent completing this lab: 1 hour
+SQL>  **********************************/
+SQL> 
+SQL> /*** 1 ***/
+SQL> /* Run the script to add a couple of records to your HR employees table.*/
+SQL> INSERT INTO employees
+  2  (employee_id, first_name, last_name, email, hire_date, job_id, salary)
+  3  VALUES
+  4  (9989, 'bill', 'rIm', 'rim@home.com', sysdate, 'PU_CLERK', 1500.25);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO employees
+  2  (employee_id, first_name, last_name, email, hire_date, job_id, salary)
+  3  VALUES
+  4  (9988, 'LARRY', 'rIMMER', 'rimmer@myhome.com', sysdate, 'PU_CLERK', 1600.25);
+
+1 row created.
+
+SQL> 
+SQL> /*** 2 ***/
+SQL> /* For all employees whose last name starts with the letter R, display the
+SQL> 	employee's last names with the first letter capitalized and all other
+SQL> 	letters lowercase (be sure to use a function), and give the length of their
+SQL> 	last name. Give each column an appropriate label using SQL (i.e. do not use
+SQL> 	the column name default). Sort the results in descending order by the
+SQL> 	employee's last name. */
+SQL> 
+SQL> SELECT INITCAP(LOWER(last_name)) AS "Last Name",
+  2  	LENGTH(last_name) AS "NumChars"
+  3  FROM employees
+  4  WHERE INITCAP(last_name) LIKE 'R%'
+  5  ORDER BY LOWER(last_name) DESC;
+
+Last Name                   NumChars                                                                                                                                                                                                                                                                        
+------------------------- ----------                                                                                                                                                                                                                                                                        
+Russell                            7                                                                                                                                                                                                                                                                        
+Rogers                             6                                                                                                                                                                                                                                                                        
+Rimmer                             6                                                                                                                                                                                                                                                                        
+Rim                                3                                                                                                                                                                                                                                                                        
+Raphaely                           8                                                                                                                                                                                                                                                                        
+Rajs                               4                                                                                                                                                                                                                                                                        
+
+6 rows selected.
+
+SQL> 
+SQL> /*** 3 ***/
+SQL> /* Your boss was at a company party and met a fellow employee named Olson, or
+SQL> was it Olsen, or may something else like that. He wasn't quite sure (his
+SQL> hearing is bad when he drinks). He wants you to run a query that will get
+SQL> all employees whose name sounds like Olson and the name of the department
+SQL> for which they work. He is sure once he sees the name and department he
+SQL> will remember the person. Make sure you use a function to check for the sound
+SQL> of the name. */
+SQL> 
+SQL> -- Traditional
+SQL> 
+SQL> SELECT INITCAP(LOWER(e.first_name)) || ' ' || INITCAP(LOWER(e.last_name))
+  2  	AS "Name",
+  3  	department_name AS "Department"
+  4  FROM employees e, departments d
+  5  WHERE e.department_id = d.department_id(+)
+  6  	AND SOUNDEX(e.last_name) = SOUNDEX('olson');
+
+Name                                           Department                                                                                                                                                                                                                                                   
+---------------------------------------------- ------------------------------                                                                                                                                                                                                                               
+Tj Olson                                       Shipping                                                                                                                                                                                                                                                     
+Christopher Olsen                              Sales                                                                                                                                                                                                                                                        
+
+SQL> 
+SQL> -- SQL/92
+SQL> 
+SQL> SELECT INITCAP(LOWER(first_name)) || ' ' || INITCAP(LOWER(last_name)) AS "Name",
+  2  	department_name AS "Department"
+  3  FROM employees
+  4  LEFT OUTER JOIN departments
+  5  	USING (department_id)
+  6  WHERE SOUNDEX(last_name) = SOUNDEX('olson');
+
+Name                                           Department                                                                                                                                                                                                                                                   
+---------------------------------------------- ------------------------------                                                                                                                                                                                                                               
+Tj Olson                                       Shipping                                                                                                                                                                                                                                                     
+Christopher Olsen                              Sales                                                                                                                                                                                                                                                        
+
+SQL> 
+SQL> /*** 4 ***/
+SQL> /* Write a query that produces the following for each employee whose last
+SQL> name begins with an R: <employee last name> earns <salary> monthly but
+SQL> wants <3 times salary>. Label the column Dream Salaries. */
+SQL> 
+SQL> SELECT last_name || ' earns ' || LTRIM(TO_CHAR(salary, '$999,999,999.00')) || ' monthly but wants ' || LTRIM(TO_CHAR(salary * 3, '$999,999,999.00')) ||'.' AS "Dream Salaries"
+  2  FROM employees
+  3  WHERE INITCAP(last_name) LIKE 'R%';
+
+Dream Salaries                                                                                                                                                                                                                                                                                              
+------------------------------------------------------------------------------------                                                                                                                                                                                                                        
+Raphaely earns $11,000.00 monthly but wants $33,000.00.                                                                                                                                                                                                                                                     
+Rogers earns $2,900.00 monthly but wants $8,700.00.                                                                                                                                                                                                                                                         
+Rajs earns $3,500.00 monthly but wants $10,500.00.                                                                                                                                                                                                                                                          
+Russell earns $14,000.00 monthly but wants $42,000.00.                                                                                                                                                                                                                                                      
+rIm earns $1,500.25 monthly but wants $4,500.75.                                                                                                                                                                                                                                                            
+rIMMER earns $1,600.25 monthly but wants $4,800.75.                                                                                                                                                                                                                                                         
+
+6 rows selected.
+
+SQL> 
+SQL> 
+SQL> /*** 5 ***/
+SQL> ROLLBACK;
+
+Rollback complete.
+
+SQL> 
+SQL> SPOOL OFF

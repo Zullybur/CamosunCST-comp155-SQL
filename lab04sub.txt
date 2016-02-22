@@ -1,0 +1,92 @@
+SQL> SET PAGESIZE 300
+SQL> SET LINESIZE 300
+SQL> 
+SQL> /****************************
+SQL>  Assignment - Lab 4 Solution
+SQL> 
+SQL>  By: Matthew Casiro
+SQL>  Lab Section: 1A
+SQL>  Due: Thursday Jan 27 @ 12:30
+SQL> 
+SQL>  Time spent working on this lab: 1 hour
+SQL> *****************************/
+SQL> 
+SQL> /*** 1 ***/
+SQL> -- The HR department wants to determine the names
+SQL> -- and hire dates for all employees who were hired
+SQL> -- BEFORE their managers, along with their managers'
+SQL> -- names and hire dates. Write a query that will list
+SQL> -- all of the names (first and last) plus the hire
+SQL> -- date of the employees and their managers who meet
+SQL> -- the requirement. Order the results in descending
+SQL> -- order by the last name of the employee. To show
+SQL> -- the HR department a sample of the results, limit
+SQL> -- the result set to employees whose last name starts
+SQL> -- with an 'S' or greater (e.g. also a 'T', 'U',
+SQL> -- 'V' etc) Be sure to handle case - use a function.
+SQL> -- Use either SQL:1999 or Oracle SQL
+SQL> 
+SQL> SELECT e.first_name, e.last_name, e.hire_date,
+  2  	m.first_name, m.last_name, m.hire_date
+  3  FROM employees e INNER JOIN employees m
+  4  	ON (e.manager_id = m.employee_id)
+  5  WHERE m.hire_date > e.hire_date
+  6  	AND INITCAP(e.last_name) >= 'S'
+  7  ORDER BY e.last_name DESC;
+
+FIRST_NAME           LAST_NAME                 HIRE_DATE FIRST_NAME           LAST_NAME                 HIRE_DATE                                                                                                                                                                                           
+-------------------- ------------------------- --------- -------------------- ------------------------- ---------                                                                                                                                                                                           
+Jennifer             Whalen                    17-SEP-87 Neena                Kochhar                   21-SEP-89                                                                                                                                                                                           
+Alana                Walsh                     24-APR-98 Kevin                Mourgos                   16-NOV-99                                                                                                                                                                                           
+Peter                Vargas                    09-JUL-98 Kevin                Mourgos                   16-NOV-99                                                                                                                                                                                           
+Jonathon             Taylor                    24-MAR-98 Eleni                Zlotkey                   29-JAN-00                                                                                                                                                                                           
+Patrick              Sully                     04-MAR-96 Karen                Partners                  05-JAN-97                                                                                                                                                                                           
+William              Smith                     23-FEB-99 Gerald               Cambrault                 15-OCT-99                                                                                                                                                                                           
+Nandita              Sarchand                  27-JAN-96 Adam                 Fripp                     10-APR-97                                                                                                                                                                                           
+
+7 rows selected.
+
+SQL> 
+SQL> /*** 2 ***/
+SQL> -- Write a script that will do the following:
+SQL> -- Include the query you produced in #1 above.
+SQL> -- Use column aliases in your SELECT statement to produce
+SQL> -- nice column labels like those in the example below
+SQL> -- (note the use of upper and lower case and spaces). Do
+SQL> -- NOT use the SQL*Plus COLUMN command to create the labels.
+SQL> -- Restrict the "Employee Name" and "Manager Name" column to
+SQL> -- 20 characters (use a SQL*Plus command).
+SQL> -- Set an appropriate pagesize and linesize (use SQL*Plus
+SQL> -- commands)
+SQL> -- Include the SPOOL command so that the spooled output
+SQL> -- will automatically go to a file (use a SQL*Plus command)
+SQL> -- The output should look similar to the table below (only
+SQL> -- the names starting with an S are given as an example):
+SQL> 
+SQL> COLUMN "Employee Name" FORMAT A20
+SQL> COLUMN "Manager Name" FORMAT A20
+SQL> 
+SQL> SELECT e.first_name || ' ' || e.last_name AS "Employee Name",
+  2  	e.hire_date AS "Hire Date",
+  3  	m.first_name || ' ' || m.last_name AS "Manager Name",
+  4  	m.hire_date AS "Hire Date"
+  5  FROM employees e INNER JOIN employees m
+  6  	ON (e.manager_id = m.employee_id)
+  7  WHERE m.hire_date > e.hire_date
+  8  	AND INITCAP(e.last_name) >= 'S'
+  9  ORDER BY e.last_name DESC;
+
+Employee Name        Hire Date Manager Name         Hire Date                                                                                                                                                                                                                                               
+-------------------- --------- -------------------- ---------                                                                                                                                                                                                                                               
+Jennifer Whalen      17-SEP-87 Neena Kochhar        21-SEP-89                                                                                                                                                                                                                                               
+Alana Walsh          24-APR-98 Kevin Mourgos        16-NOV-99                                                                                                                                                                                                                                               
+Peter Vargas         09-JUL-98 Kevin Mourgos        16-NOV-99                                                                                                                                                                                                                                               
+Jonathon Taylor      24-MAR-98 Eleni Zlotkey        29-JAN-00                                                                                                                                                                                                                                               
+Patrick Sully        04-MAR-96 Karen Partners       05-JAN-97                                                                                                                                                                                                                                               
+William Smith        23-FEB-99 Gerald Cambrault     15-OCT-99                                                                                                                                                                                                                                               
+Nandita Sarchand     27-JAN-96 Adam Fripp           10-APR-97                                                                                                                                                                                                                                               
+
+7 rows selected.
+
+SQL> 
+SQL> SPOOL OFF

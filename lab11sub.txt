@@ -1,0 +1,205 @@
+SQL> set pagesize 20
+SQL> set linesize 80
+SQL> 
+SQL> /*********************************
+SQL>  Assignment - Lab 11 Solution
+SQL>  By Matthew Casiro
+SQL>  Lab Section: 1A
+SQL>  Time Used Completing Lab: 1.0 hours
+SQL>  **********************************/
+SQL> 
+SQL> /*** 1 Create MY_STUDENT ***/
+SQL> 
+SQL> CREATE TABLE my_student (
+  2  	 mystudent_id NUMBER(5),
+  3  	 mylname VARCHAR2(25),
+  4  	 mystartdate DATE DEFAULT SYSDATE
+  5  	 );
+
+Table created.
+
+SQL> 
+SQL> /*** 2 Describe ***/
+SQL> 
+SQL> DESC my_student
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ MYSTUDENT_ID                                       NUMBER(5)
+ MYLNAME                                            VARCHAR2(25)
+ MYSTARTDATE                                        DATE
+
+SQL> 
+SQL> /*** 3 Modify MY_STUDENT ***/
+SQL> 
+SQL> ALTER TABLE my_student
+  2  MODIFY mylname VARCHAR(50);
+
+Table altered.
+
+SQL> 
+SQL> /*** 4 Describe ***/
+SQL> 
+SQL> DESC my_student
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ MYSTUDENT_ID                                       NUMBER(5)
+ MYLNAME                                            VARCHAR2(50)
+ MYSTARTDATE                                        DATE
+
+SQL> 
+SQL> /*** 5 Insert your name ***/
+SQL> 
+SQL> INSERT INTO my_student (mystudent_id, mylname)
+  2  VALUES (95003, 'Casiro');
+
+1 row created.
+
+SQL> 
+SQL> /*** 6 List contents ***/
+SQL> 
+SQL> SELECT *
+  2  FROM my_student;
+
+MYSTUDENT_ID MYLNAME                                            MYSTARTDA       
+------------ -------------------------------------------------- ---------       
+       95003 Casiro                                             17-FEB-16       
+
+SQL> 
+SQL> /*** 7 Add comment ***/
+SQL> 
+SQL> COMMENT ON TABLE my_student IS
+  2  'Lab 11 Table';
+
+Comment created.
+
+SQL> 
+SQL> /*** 8 Confirm comment for MY_STUDENT ***/
+SQL> 
+SQL> SELECT *
+  2  FROM user_tab_comments
+  3  WHERE LOWER(table_name) = 'my_student';
+
+TABLE_NAME                     TABLE_TYPE                                       
+------------------------------ -----------                                      
+COMMENTS                                                                        
+--------------------------------------------------------------------------------
+MY_STUDENT                     TABLE                                            
+Lab 11 Table                                                                    
+                                                                                
+
+SQL> 
+SQL> /*** 9 Create table My_Student ***/
+SQL> 
+SQL> CREATE TABLE "My_Student" AS
+  2  SELECT mystudent_id AS "StudentNo", mylname AS "Last Name", mystartdate AS "BeginDate"
+  3  FROM my_student;
+
+Table created.
+
+SQL> 
+SQL> /*** 10 Describe ***/
+SQL> 
+SQL> DESC "My_Student"
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ StudentNo                                          NUMBER(5)
+ Last Name                                          VARCHAR2(50)
+ BeginDate                                          DATE
+
+SQL> 
+SQL> /*** 11 Select from data dictionary ***/
+SQL> 
+SQL> SELECT table_name
+  2  FROM user_tables;
+
+TABLE_NAME                                                                      
+------------------------------                                                  
+MY_STUDENT                                                                      
+My_Student                                                                      
+CUSTOMERS                                                                       
+PRODUCT_TYPES                                                                   
+PRODUCTS                                                                        
+ORDER_STATUS                                                                    
+PRODUCT_CHANGES                                                                 
+REGIONS                                                                         
+LOCATIONS                                                                       
+DEPARTMENTS                                                                     
+JOBS                                                                            
+EMPLOYEES                                                                       
+JOB_HISTORY                                                                     
+COUNTRIES                                                                       
+
+14 rows selected.
+
+SQL> 
+SQL> /*** 12 Drop MY_STUDENT ***/
+SQL> 
+SQL> DROP TABLE my_student PURGE;
+
+Table dropped.
+
+SQL> 
+SQL> /*** 13 Rename ***/
+SQL> 
+SQL> RENAME "My_Student" TO "MY_STUDENT";
+
+Table renamed.
+
+SQL> 
+SQL> /*** 14 Select from data dictionary ***/
+SQL> 
+SQL> SELECT table_name
+  2  FROM user_tables;
+
+TABLE_NAME                                                                      
+------------------------------                                                  
+MY_STUDENT                                                                      
+CUSTOMERS                                                                       
+PRODUCT_TYPES                                                                   
+PRODUCTS                                                                        
+ORDER_STATUS                                                                    
+PRODUCT_CHANGES                                                                 
+REGIONS                                                                         
+LOCATIONS                                                                       
+DEPARTMENTS                                                                     
+JOBS                                                                            
+EMPLOYEES                                                                       
+JOB_HISTORY                                                                     
+COUNTRIES                                                                       
+
+13 rows selected.
+
+SQL> 
+SQL> /*** 15 Drop MY_STUDENT ***/
+SQL> 
+SQL> DROP TABLE my_student PURGE;
+
+Table dropped.
+
+SQL> 
+SQL> /*** 16 Select from data dictionary ***/
+SQL> 
+SQL> SELECT table_name
+  2  FROM user_tables;
+
+TABLE_NAME                                                                      
+------------------------------                                                  
+CUSTOMERS                                                                       
+PRODUCT_TYPES                                                                   
+PRODUCTS                                                                        
+ORDER_STATUS                                                                    
+PRODUCT_CHANGES                                                                 
+REGIONS                                                                         
+LOCATIONS                                                                       
+DEPARTMENTS                                                                     
+JOBS                                                                            
+EMPLOYEES                                                                       
+JOB_HISTORY                                                                     
+COUNTRIES                                                                       
+
+12 rows selected.
+
+SQL> 
+SQL> /*** 17 ***/
+SQL> 
+SQL> SPOOL OFF
