@@ -56,7 +56,7 @@ SQL> SELECT constraint_name, constraint_type, search_condition
 
 CONSTRAINT_NAME                C SEARCH_CONDITION                                                                       
 ------------------------------ - --------------------------------------------------------------------------------       
-SYS_C00298388                  C "CREATED_BY" IS NOT NULL                                                               
+SYS_C00298407                  C "CREATED_BY" IS NOT NULL                                                               
 
 SQL> 
 SQL> /*** Step 5 Create PROGRAMMES ***/
@@ -145,7 +145,7 @@ TABLE_NAME                     CONSTRAINT_NAME                C
 ------------------------------ ------------------------------ -                                                         
 SEARCH_CONDITION                                                                                                        
 --------------------------------------------------------------------------------                                        
-NEW_STUDENTS                   SYS_C00298388                  C                                                         
+NEW_STUDENTS                   SYS_C00298407                  C                                                         
 "CREATED_BY" IS NOT NULL                                                                                                
                                                                                                                         
 NEW_STUDENTS                   TEMPID_PROGID_PK               P                                                         
@@ -173,19 +173,60 @@ ORA-02291: integrity constraint (CASIRO.PROG_ID_FK) violated - parent key not fo
 SQL> 
 SQL> /*** Step 13 Explain error ***/
 SQL> 
-SQL> REM You should get an error when you insert the record in Step 12. Why?
+SQL> --The table "programmes" does not contain a prog_ig 'econ' and so
+SQL> --we cannot add this entry in to new_students. Prog_id is a foreign
+SQL> --key in new_students referencing programmes which means all values
+SQL> --for this column in new_students must exist in programmes.
 SQL> 
 SQL> /*** Step 14 Add date constraint ***/
 SQL> 
-SQL> REM SQL command here
+SQL> ALTER TABLE new_students
+  2  ADD CONSTRAINT dates_ck
+  3  CHECK (reg_date >= TO_DATE('January 1, 1997', 'Month dd, yyyy'));
+
+Table altered.
+
 SQL> 
 SQL> /*** Step 15 Test date constraint ***/
 SQL> 
-SQL> REM SQL command here
+SQL> INSERT INTO new_students
+  2  VALUES
+  3  	 (9519, 'comp', 'Grace', 'Hopper', TO_DATE('January 2, 1948', 'Month dd, yyyy'), 'Matthew Casiro', NULL);
+INSERT INTO new_students
+*
+ERROR at line 1:
+ORA-02290: check constraint (CASIRO.DATES_CK) violated 
+
+
 SQL> 
 SQL> /*** Step 16 List constraints for new tables ***/
 SQL> 
-SQL> REM SQL command here
+SQL> SELECT table_name, constraint_name, constraint_type, search_condition
+  2  FROM user_constraints
+  3  WHERE table_name = 'NEW_STUDENTS'
+  4  OR table_name = 'PROGRAMMES'
+  5  ORDER BY table_name;
+
+TABLE_NAME                     CONSTRAINT_NAME                C                                                         
+------------------------------ ------------------------------ -                                                         
+SEARCH_CONDITION                                                                                                        
+--------------------------------------------------------------------------------                                        
+NEW_STUDENTS                   SYS_C00298407                  C                                                         
+"CREATED_BY" IS NOT NULL                                                                                                
+                                                                                                                        
+NEW_STUDENTS                   TEMPID_PROGID_PK               P                                                         
+                                                                                                                        
+                                                                                                                        
+NEW_STUDENTS                   PROG_ID_FK                     R                                                         
+                                                                                                                        
+                                                                                                                        
+NEW_STUDENTS                   DATES_CK                       C                                                         
+reg_date >= TO_DATE('January 1, 1997', 'Month dd, yyyy')                                                                
+                                                                                                                        
+PROGRAMMES                     PROG_ID_PK                     P                                                         
+                                                                                                                        
+                                                                                                                        
+
 SQL> 
 SQL> /*** Step 17 Clean up schema ***/
 SQL> 

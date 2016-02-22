@@ -101,15 +101,21 @@ VALUES
 
 ALTER TABLE new_students
 ADD CONSTRAINT dates_ck
-CHECK (reg_date > TO_DATE('January 1, 1997', 'Month dd, yyyy'));
+CHECK (reg_date >= TO_DATE('January 1, 1997', 'Month dd, yyyy'));
 
 /*** Step 15 Test date constraint ***/
 
-REM SQL command here
+INSERT INTO new_students
+VALUES
+    (9519, 'comp', 'Grace', 'Hopper', TO_DATE('January 2, 1948', 'Month dd, yyyy'), 'Matthew Casiro', NULL);
 
 /*** Step 16 List constraints for new tables ***/
 
-REM SQL command here
+SELECT table_name, constraint_name, constraint_type, search_condition
+FROM user_constraints
+WHERE table_name = 'NEW_STUDENTS'
+OR table_name = 'PROGRAMMES'
+ORDER BY table_name;
 
 /*** Step 17 Clean up schema ***/
 
