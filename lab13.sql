@@ -3,6 +3,7 @@
 set echo on
 SPOOL /Users/MattCasiro/OneDrive/Camosun/comp155/labs/lab13sub.txt
 SET PAGESIZE 50
+SET LINESIZE 120
 
 /*********************************
  Assignment - Lab 13 Solution
@@ -35,7 +36,7 @@ CREATE VIEW dept50 AS
 SELECT employee_id AS empno, last_name AS employee, department_id AS deptno
 FROM employees
 WHERE department_id = 50
-WITH CHECK OPTION CONSTRAINT dept_id;
+WITH CHECK OPTION CONSTRAINT dept50_emp_info;
 
 /*** Step 5 Structure & Contents of DEPT50 ***/
 
