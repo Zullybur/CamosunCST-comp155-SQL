@@ -1,0 +1,175 @@
+SQL> SET PAGESIZE 50
+SQL> 
+SQL> /*********************************
+SQL>  Assignment - Lab 14 Solution
+SQL>  By Matthew Casiro
+SQL>  Lab Section: 1A
+SQL>  **********************************/
+SQL> 
+SQL> /*** Step 1 Run script to create table & insert data ***/
+SQL> 
+SQL> @/Users/MattCasiro/OneDrive/Camosun/comp155/labs/lab14Create.sql
+SQL> /*** Create the table ***/
+SQL> 
+SQL> CREATE TABLE mytextbooktable
+  2  (text_id NUMBER(5),
+  3   text_name VARCHAR2(25),
+  4   text_author VARCHAR2(50),
+  5   text_publisher VARCHAR2(25),
+  6   faculty_ref NUMBER(5));
+
+Table created.
+
+SQL> 
+SQL> /*** Insert some data ***/
+SQL> 
+SQL> INSERT INTO mytextbooktable
+  2  (text_name, text_author, text_publisher,faculty_ref)
+  3  VALUES
+  4  ('All computers', 'Know It All', 'Self',3);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO mytextbooktable
+  2  (text_name, text_author, text_publisher,faculty_ref)
+  3  VALUES
+  4  ('No Homework!', 'Tired Student', 'Publish',1);
+
+1 row created.
+
+SQL> 
+SQL> /*** Step 2 Create sequence ***/
+SQL> 
+SQL> CREATE SEQUENCE textbook_seq
+  2  START WITH 22
+  3  NOCACHE;
+
+Sequence created.
+
+SQL> 
+SQL> /*** Step 3 Update with sequence ***/
+SQL> 
+SQL> UPDATE mytextbooktable
+  2  SET text_id = textbook_seq.nextval;
+
+2 rows updated.
+
+SQL> 
+SQL> /*** Step 4 Display details about textbook_seq ***/
+SQL> 
+SQL> SELECT sequence_name, max_value, increment_by, last_number
+  2  FROM user_sequences
+  3  WHERE sequence_name = 'TEXTBOOK_SEQ';
+
+SEQUENCE_NAME                   MAX_VALUE INCREMENT_BY LAST_NUMBER                                                      
+------------------------------ ---------- ------------ -----------                                                      
+TEXTBOOK_SEQ                   1.0000E+28            1          24                                                      
+
+SQL> 
+SQL> /*** Step 5 Make text_id the primary key ***/
+SQL> 
+SQL> ALTER TABLE mytextbooktable
+  2  ADD CONSTRAINT mytextbooktable_textid_pk
+  3  PRIMARY KEY (text_id);
+
+Table altered.
+
+SQL> 
+SQL> /*** Step 6 Insert values ***/
+SQL> 
+SQL> INSERT INTO mytextbooktable
+  2  VALUES
+  3  	 (textbook_seq.nextval, 'Relational Databases', 'Ted Codd', 'IT', 2);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO mytextbooktable
+  2  VALUES
+  3  	 (textbook_seq.nextval, 'The greatest book ever', 'Matthew Casiro', 'Publish', 1);
+
+1 row created.
+
+SQL> 
+SQL> /*** Step 7 List from MYTEXTBOOKTABLE ***/
+SQL> 
+SQL> SELECT text_id, text_author
+  2  FROM mytextbooktable;
+
+   TEXT_ID TEXT_AUTHOR                                                                                                  
+---------- --------------------                                                                                         
+        22 Know It All                                                                                                  
+        23 Tired Student                                                                                                
+        24 Ted Codd                                                                                                     
+        25 Matthew Casiro                                                                                               
+
+SQL> 
+SQL> /*** Step 8 Create non-unique index ***/
+SQL> 
+SQL> CREATE INDEX textname_idx ON
+  2  mytextbooktable(text_name);
+
+Index created.
+
+SQL> 
+SQL> /*** Step 9 Display details about indexes on textbook table ***/
+SQL> 
+SQL> SELECT index_name, index_type, uniqueness
+  2  FROM user_indexes
+  3  WHERE table_name = 'MYTEXTBOOKTABLE';
+
+INDEX_NAME                     INDEX_TYPE                  UNIQUENES                                                    
+------------------------------ --------------------------- ---------                                                    
+MYTEXTBOOKTABLE_TEXTID_PK      NORMAL                      UNIQUE                                                       
+TEXTNAME_IDX                   NORMAL                      NONUNIQUE                                                    
+
+SQL> 
+SQL> /*** Step 10 Create synonym ***/
+SQL> 
+SQL> CREATE SYNONYM text FOR mytextbooktable;
+
+Synonym created.
+
+SQL> 
+SQL> /*** Step 11 Use synonym to list ***/
+SQL> 
+SQL> SELECT text_id, text_author
+  2  FROM text;
+
+   TEXT_ID TEXT_AUTHOR                                                                                                  
+---------- --------------------                                                                                         
+        22 Know It All                                                                                                  
+        23 Tired Student                                                                                                
+        24 Ted Codd                                                                                                     
+        25 Matthew Casiro                                                                                               
+
+SQL> 
+SQL> /*** Step 12 Display synonym names ***/
+SQL> 
+SQL> SELECT *
+  2  FROM user_synonyms;
+
+SYNONYM_NAME                   TABLE_OWNER                    TABLE_NAME                     DB_LINK                    
+------------------------------ ------------------------------ ------------------------------ --------------------       
+TEXT                           CASIRO                         MYTEXTBOOKTABLE                                           
+
+SQL> 
+SQL> /*** Step 13 Drop schema objects ***/
+SQL> 
+SQL> DROP TABLE mytextbooktable PURGE;
+
+Table dropped.
+
+SQL> DROP SEQUENCE textbook_seq;
+
+Sequence dropped.
+
+SQL> DROP SYNONYM text;
+
+Synonym dropped.
+
+SQL> 
+SQL> /*** Step 14 End ***/
+SQL> 
+SQL> SPOOL OFF
